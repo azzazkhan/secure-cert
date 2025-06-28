@@ -1,4 +1,5 @@
 import { FlatCompat } from '@eslint/eslintrc'
+import pluginQuery from '@tanstack/eslint-plugin-query'
 import prettier from 'eslint-config-prettier'
 import { dirname } from 'path'
 import { fileURLToPath } from 'url'
@@ -10,6 +11,10 @@ const compat = new FlatCompat({
     baseDirectory: __dirname
 })
 
-const eslintConfig = [...compat.extends('next/core-web-vitals', 'next/typescript'), prettier]
+const eslintConfig = [
+    ...compat.extends('next/core-web-vitals', 'next/typescript'),
+    prettier,
+    ...pluginQuery.configs['flat/recommended']
+]
 
 export default eslintConfig
