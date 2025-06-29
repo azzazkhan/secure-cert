@@ -3,7 +3,8 @@
 import { WalletContext, WalletContextType } from '@/contexts/wallet.context'
 import abi from '@/data/abi.json'
 import { BrowserProvider, Contract } from 'ethers'
-import React, { useEffect, useState } from 'react'
+import { ErrorDecoder } from 'ethers-decode-error'
+import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 
 export default function WalletProvider({ children }: { children: React.ReactNode }) {
@@ -21,10 +22,9 @@ export default function WalletProvider({ children }: { children: React.ReactNode
         const signer = await provider.getSigner()
         const address = await signer.getAddress()
         const contract = new Contract(process.env.NEXT_PUBLIC_CONTRACT_ADDRESS, abi, signer)
+        const decoder = ErrorDecoder.create([abi])
 
-        console.log({ provider, signer, address, contract: contract.connect(signer) })
-
-        return { provider, signer, address, contract }
+        return { provider, signer, address, contract, decoder }
     }
 
     useEffect(() => {

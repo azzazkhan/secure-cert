@@ -18,8 +18,8 @@ declare module '@tanstack/react-query' {
     interface Register {
         mutationMeta: {
             invalidateQueries?: QueryKey
-            successMessage?: string
-            errorMessage?: string
+            successMessage?: string | ((data: unknown) => string)
+            errorMessage?: string | ((error: Error) => string)
         }
     }
 }

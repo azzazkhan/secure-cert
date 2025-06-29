@@ -5,27 +5,26 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { LoaderCircle } from 'lucide-react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-
-const RevokeCertificateSchema = z.object({
-    documentHash: z.string().min(1)
-})
-
-type RevokeCertificate = z.infer<typeof RevokeCertificateSchema>
+import useRevokeCertificate from './hooks'
+import { RevokeCertificate as RevokeCertificateForm, RevokeCertificateSchema } from './schema'
 
 export default function RevokeCertificate() {
-    const form = useForm<RevokeCertificate>({
+    const { mutate, isPending } = useRevokeCertificate()
+    const form = useForm<RevokeCertificateForm>({
         resolver: zodResolver(RevokeCertificateSchema),
         defaultValues: {
             documentHash: ''
         }
     })
 
-    const isLoading = false
-
-    const onSubmit = (data: RevokeCertificate) => {
-        console.log(data)
+    const onSubmit = (data: RevokeCertificateForm) => {
+        mutate(data.documentHash, {
+            onSuccess: () => {
+                form.reset()
+            }
+        })
     }
 
     return (
@@ -51,7 +50,10 @@ export default function RevokeCertificate() {
                                         <FormItem>
                                             <FormLabel>Document SHA-256 Hash</FormLabel>
                                             <FormControl>
-                                                <Input {...field} />
+                                                <Input
+                                                    {...field}
+                                                    placeholder="Enter the SHA256 hash of the certificate document"
+                                                />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -59,8 +61,9 @@ export default function RevokeCertificate() {
                                 />
                             </div>
 
-                            <Button type="submit" variant="destructive" className="w-full" disabled={isLoading}>
-                                {isLoading ? 'Revoking Certificate...' : 'Revoke Certificate'}
+                            <Button type="submit" variant="destructive" className="w-full" disabled={isPending}>
+                                {isPending && <LoaderCircle className="size-4 animate-spin" />}
+                                {isPending ? 'Revoking Certificate' : 'Revoke Certificate'}
                             </Button>
                         </form>
                     </Form>

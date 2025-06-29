@@ -1,4 +1,5 @@
 import { BrowserProvider, Contract, JsonRpcSigner } from 'ethers'
+import { ErrorDecoder } from 'ethers-decode-error'
 import { createContext } from 'react'
 
 export interface WalletContextType {
@@ -7,6 +8,7 @@ export interface WalletContextType {
     contract: Contract
     address: string
     loading: boolean
+    decoder: ErrorDecoder
     error: string | null
 }
 

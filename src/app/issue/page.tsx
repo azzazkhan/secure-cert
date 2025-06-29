@@ -5,29 +5,28 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { LoaderCircle } from 'lucide-react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-
-const CertificateSchema = z.object({
-    student: z.string().min(1),
-    document: z.string().min(1)
-})
-
-type Certificate = z.infer<typeof CertificateSchema>
+import useIssueCertificate from './hooks'
+import { Certificate, CertificateSchema } from './schema'
 
 export default function IssueCertificate() {
+    const { mutate, isPending } = useIssueCertificate()
+
     const form = useForm<Certificate>({
         resolver: zodResolver(CertificateSchema),
         defaultValues: {
-            student: '',
-            document: ''
+            studentAddress: '',
+            documentHash: ''
         }
     })
 
-    const isLoading = false
-
     const onSubmit = (data: Certificate) => {
-        console.log(data)
+        mutate(data, {
+            onSuccess: () => {
+                form.reset()
+            }
+        })
     }
 
     return (
@@ -49,12 +48,16 @@ export default function IssueCertificate() {
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                             <FormField
                                 control={form.control}
-                                name="student"
+                                name="studentAddress"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Student Ethereum Address</FormLabel>
                                         <FormControl>
-                                            <Input {...field} />
+                                            <Input
+                                                {...field}
+                                                disabled={isPending}
+                                                placeholder="Enter Ethereum address of the student"
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -62,20 +65,25 @@ export default function IssueCertificate() {
                             />
                             <FormField
                                 control={form.control}
-                                name="document"
+                                name="documentHash"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Document SHA-256 Hash</FormLabel>
                                         <FormControl>
-                                            <Input {...field} />
+                                            <Input
+                                                {...field}
+                                                disabled={isPending}
+                                                placeholder="Enter the SHA256 hash of the certificate document"
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
 
-                            <Button type="submit" className="w-full" disabled={isLoading}>
-                                {isLoading ? 'Issuing Certificate...' : 'Issue Certificate'}
+                            <Button type="submit" className="w-full" disabled={isPending}>
+                                {isPending && <LoaderCircle className="size-4 animate-spin" />}
+                                {isPending ? 'Issuing Certificate' : 'Issue Certificate'}
                             </Button>
                         </form>
                     </Form>
