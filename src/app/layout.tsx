@@ -1,5 +1,7 @@
 import Header from '@/components/layout/header'
 // import { ThemeProvider } from '@/providers/theme-provider'
+import ProgressProvider from '@/providers/progress-provider'
+import QueryProvider from '@/providers/query-provider'
 import WalletProvider from '@/providers/wallet-provider'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
@@ -24,15 +26,19 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning>
             <body
-                className={`h-dvh bg-gradient-to-br from-blue-50 to-indigo-100 font-sans antialiased ${inter.variable}`}
+                className={`min-h-dvh bg-gradient-to-br from-blue-50 to-indigo-100 font-sans antialiased ${inter.variable}`}
             >
-                <WalletProvider>
-                    {/* <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange> */}
-                    <Header />
-                    <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">{children}</main>
-                    <Toaster />
-                    {/* </ThemeProvider> */}
-                </WalletProvider>
+                <ProgressProvider>
+                    <QueryProvider>
+                        <WalletProvider>
+                            {/* <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange> */}
+                            <Header />
+                            <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">{children}</main>
+                            <Toaster />
+                            {/* </ThemeProvider> */}
+                        </WalletProvider>
+                    </QueryProvider>
+                </ProgressProvider>
             </body>
         </html>
     )

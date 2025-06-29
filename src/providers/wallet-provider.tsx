@@ -1,7 +1,8 @@
 'use client'
 
 import { WalletContext, WalletContextType } from '@/contexts/wallet.context'
-import { BrowserProvider } from 'ethers'
+import abi from '@/data/abi.json'
+import { BrowserProvider, Contract } from 'ethers'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 
@@ -16,15 +17,14 @@ export default function WalletProvider({ children }: { children: React.ReactNode
         }
 
         const provider = new BrowserProvider(window.ethereum)
-        console.log({ provider })
-
+        await provider.send('eth_requestAccounts', [])
         const signer = await provider.getSigner()
-        console.log({ signer })
-
         const address = await signer.getAddress()
-        console.log({ address })
+        const contract = new Contract(process.env.NEXT_PUBLIC_CONTRACT_ADDRESS, abi, signer)
 
-        return { provider, signer, address }
+        console.log({ provider, signer, address, contract: contract.connect(signer) })
+
+        return { provider, signer, address, contract }
     }
 
     useEffect(() => {

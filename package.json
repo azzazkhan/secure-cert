@@ -11,6 +11,7 @@
         "prepare": "husky"
     },
     "dependencies": {
+        "@bprogress/next": "^3.2.12",
         "@hookform/resolvers": "^5.1.1",
         "@mantine/hooks": "^8.1.2",
         "@radix-ui/react-dialog": "^1.1.14",

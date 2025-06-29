@@ -1,9 +1,10 @@
-import { BrowserProvider, JsonRpcSigner } from 'ethers'
+import { BrowserProvider, Contract, JsonRpcSigner } from 'ethers'
 import { createContext } from 'react'
 
 export interface WalletContextType {
     provider: BrowserProvider
     signer: JsonRpcSigner
+    contract: Contract
     address: string
     loading: boolean
     error: string | null

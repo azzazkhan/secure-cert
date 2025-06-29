@@ -11,7 +11,7 @@ export default function Header() {
     const pathname = usePathname()
 
     return (
-        <nav className="sticky top-0 right-0 left-0 z-50 flex justify-center border-b border-gray-200 bg-white/80 px-4 backdrop-blur-md sm:px-6 lg:px-8">
+        <nav className="sticky top-0 right-0 left-0 flex justify-center border-b border-gray-200 bg-white/80 px-4 backdrop-blur-md sm:px-6 lg:px-8">
             <div className="flex h-16 max-w-7xl grow items-center justify-between gap-10">
                 {/* Logo */}
                 <div className="flex items-center space-x-2">
