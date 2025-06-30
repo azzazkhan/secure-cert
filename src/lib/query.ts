@@ -25,11 +25,12 @@ export const queryClient = new QueryClient({
         },
         onSettled: (_data, _error, _variables, _context, mutation) => {
             if (mutation.meta?.invalidateQueries) {
-                console.log(mutation.meta?.invalidateQueries)
+                const queryKey =
+                    mutation.meta.invalidateQueries instanceof Function
+                        ? mutation.meta.invalidateQueries(_data, _error)
+                        : mutation.meta.invalidateQueries
 
-                queryClient.invalidateQueries({
-                    queryKey: mutation.meta.invalidateQueries
-                })
+                queryClient.invalidateQueries({ queryKey })
             }
         }
     })

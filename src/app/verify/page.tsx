@@ -1,31 +1,59 @@
 'use client'
 
+import {
+    AlertDialog,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle
+} from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { LoaderCircle } from 'lucide-react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-
-const VerifyCertificateSchema = z.object({
-    documentHash: z.string().min(1)
-})
-
-type VerifyCertificate = z.infer<typeof VerifyCertificateSchema>
+import toast from 'react-hot-toast'
+import { useVerifyCertificate } from './hooks'
+import { VerificationResult, VerifyCertificate as VerifyCertificateForm, VerifyCertificateSchema } from './schema'
 
 export default function VerifyCertificate() {
-    const form = useForm<VerifyCertificate>({
+    const [opened, setOpened] = useState(false)
+    const [verification, setVerification] = useState<VerificationResult | null>(null)
+
+    const form = useForm<VerifyCertificateForm>({
         resolver: zodResolver(VerifyCertificateSchema),
         defaultValues: {
             documentHash: ''
         }
     })
 
-    const isLoading = false
+    const { mutate, isPending } = useVerifyCertificate()
 
-    const onSubmit = (data: VerifyCertificate) => {
-        console.log(data)
+    const handleClose = () => {
+        setOpened(false)
+        setVerification(null)
+        form.reset()
+    }
+
+    const onSubmit = (data: VerifyCertificateForm) => {
+        mutate(data.documentHash, {
+            onSuccess: (data) => {
+                setOpened(true)
+                setVerification(data)
+
+                if (data.valid) {
+                    setOpened(true)
+                    setVerification(data)
+                } else {
+                    toast.error('The provided certificate is not valid')
+                }
+            }
+        })
     }
 
     return (
@@ -51,7 +79,10 @@ export default function VerifyCertificate() {
                                         <FormItem>
                                             <FormLabel>Document SHA-256 Hash</FormLabel>
                                             <FormControl>
-                                                <Input {...field} />
+                                                <Input
+                                                    {...field}
+                                                    placeholder="Enter the SHA256 hash of the certificate document"
+                                                />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -59,8 +90,9 @@ export default function VerifyCertificate() {
                                 />
                             </div>
 
-                            <Button type="submit" className="w-full" disabled={isLoading}>
-                                {isLoading ? 'Verifying...' : 'Verify Certificate'}
+                            <Button type="submit" className="w-full" disabled={isPending}>
+                                {isPending && <LoaderCircle className="size-4 animate-spin" />}
+                                {isPending ? 'Getting details' : 'Verify Certificate'}
                             </Button>
                         </form>
                     </Form>
@@ -87,6 +119,51 @@ export default function VerifyCertificate() {
                     )} */}
                 </CardContent>
             </Card>
+
+            <AlertDialog open={opened} onOpenChange={(opened) => (!opened ? handleClose() : null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Verification Result</AlertDialogTitle>
+                        <AlertDialogDescription></AlertDialogDescription>
+                    </AlertDialogHeader>
+                    {verification && (
+                        <div className="grid gap-3.5">
+                            {/* Issuer Name */}
+                            <div className="grid w-full items-center gap-2">
+                                <Label>Issuer Name</Label>
+                                <Input type="text" className="w-full" value={verification.issuer.name} readOnly />
+                            </div>
+
+                            {/* Issuer Address */}
+                            <div className="grid w-full items-center gap-2">
+                                <Label>Issuer Address</Label>
+                                <Input type="text" className="w-full" value={verification.issuer.address} readOnly />
+                            </div>
+
+                            {/* Student Address */}
+                            <div className="grid w-full items-center gap-2">
+                                <Label>Student Address</Label>
+                                <Input type="text" className="w-full" value={verification.student} readOnly />
+                            </div>
+
+                            {/* Document Hash */}
+                            <div className="grid w-full items-center gap-2">
+                                <Label>Document Hash</Label>
+                                <Input type="text" className="w-full" value={verification.hash} readOnly />
+                            </div>
+
+                            {/* Issued At */}
+                            <div className="grid w-full items-center gap-2">
+                                <Label>Issued At</Label>
+                                <Input type="text" className="w-full" value={verification.issued_at!} readOnly />
+                            </div>
+                        </div>
+                    )}
+                    <AlertDialogFooter className="flex justify-end">
+                        <Button onClick={handleClose}>Close</Button>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     )
 }
