@@ -92,7 +92,7 @@ export default function ConfirmationModal() {
         })
     }, [on, emit])
 
-    const closeModal = (delay = 1000) => {
+    const closeModal = (delay = 500) => {
         setOpen(false)
         emit(CONFIRMATION_MODAL_CLOSED, state.id)
 
@@ -184,7 +184,7 @@ export default function ConfirmationModal() {
 
                     <DialogFooter className={cn('mt-4 grid grid-cols-1 gap-2', state.cancelable && 'grid-cols-2')}>
                         {state.cancelable && (
-                            <Button variant="ghost" onClick={handleCancellation} disabled={loading}>
+                            <Button type="button" variant="ghost" onClick={handleCancellation} disabled={loading}>
                                 {state.cancelLabel}
                             </Button>
                         )}
