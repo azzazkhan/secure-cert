@@ -4,8 +4,8 @@ import { navigation } from '@/data'
 import { Shield } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
+import ConnectionBadge from './connection-badge'
 
 export default function Header() {
     const pathname = usePathname()
@@ -41,24 +41,8 @@ export default function Header() {
 
                 {/* Wallet Connection */}
                 <div className="flex items-center space-x-4">
-                    <Badge
-                        variant="secondary"
-                        className="flex items-center gap-2 rounded-full bg-green-100 px-2.5 py-1 text-green-800"
-                    >
-                        <span className="relative flex size-3 scale-75 transform">
-                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-                            <span className="relative inline-flex size-3 rounded-full bg-green-500" />
-                        </span>
-                        Connected
-                    </Badge>
+                    <ConnectionBadge />
                 </div>
-                {/* {isWalletConnected ? (
-                        ) : (
-                            <Button onClick={connectWallet} className="flex items-center space-x-2">
-                                <Wallet className="h-4 w-4" />
-                                <span>Connect Wallet</span>
-                            </Button>
-                        )} */}
             </div>
         </nav>
     )

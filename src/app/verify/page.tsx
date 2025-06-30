@@ -1,5 +1,6 @@
 'use client'
 
+import ConnectionMessage from '@/components/common/connection-message'
 import {
     AlertDialog,
     AlertDialogContent,
@@ -13,6 +14,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useWallet } from '@/hooks/use-wallet'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LoaderCircle } from 'lucide-react'
 import { useState } from 'react'
@@ -22,6 +24,7 @@ import { useVerifyCertificate } from './hooks'
 import { VerificationResult, VerifyCertificate as VerifyCertificateForm, VerifyCertificateSchema } from './schema'
 
 export default function VerifyCertificate() {
+    const { success } = useWallet()
     const [opened, setOpened] = useState(false)
     const [verification, setVerification] = useState<VerificationResult | null>(null)
 
@@ -65,56 +68,41 @@ export default function VerifyCertificate() {
                     <CardTitle className="text-2xl">Certificate Verification</CardTitle>
                     <CardDescription>Enter the document hash to verify certificate status</CardDescription>
                 </CardHeader>
-                <CardContent>
-                    <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                            <div className="space-y-2">
-                                <FormField
-                                    control={form.control}
-                                    name="documentHash"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Document SHA-256 Hash</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    {...field}
-                                                    placeholder="Enter the SHA256 hash of the certificate document"
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            </div>
-
-                            <Button type="submit" className="w-full" disabled={isPending}>
-                                {isPending && <LoaderCircle className="size-4 animate-spin" />}
-                                {isPending ? 'Getting details' : 'Verify Certificate'}
-                            </Button>
-                        </form>
-                    </Form>
-
-                    {/* Verification Result */}
-                    {/* {verificationResult && (
-                        <div className="mt-8 rounded-lg bg-gray-50 p-6">
-                            <h3 className="mb-4 text-lg font-semibold">Verification Result</h3>
-                            <div className="space-y-3">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm font-medium">Status:</span>
-                                    {getStatusBadge(verificationResult.status)}
+                {success ? (
+                    <CardContent>
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                                <div className="space-y-2">
+                                    <FormField
+                                        control={form.control}
+                                        name="documentHash"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Document SHA-256 Hash</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        {...field}
+                                                        placeholder="Enter the SHA256 hash of the certificate document"
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
                                 </div>
-                                {verificationResult.issuedBy && (
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium">Issued By:</span>
-                                        <span className="font-mono text-sm text-gray-600">
-                                            {verificationResult.issuedBy}
-                                        </span>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    )} */}
-                </CardContent>
+
+                                <Button type="submit" className="w-full" disabled={isPending}>
+                                    {isPending && <LoaderCircle className="size-4 animate-spin" />}
+                                    {isPending ? 'Getting details' : 'Verify Certificate'}
+                                </Button>
+                            </form>
+                        </Form>
+                    </CardContent>
+                ) : (
+                    <CardContent>
+                        <ConnectionMessage />
+                    </CardContent>
+                )}
             </Card>
 
             <AlertDialog open={opened} onOpenChange={(opened) => (!opened ? handleClose() : null)}>

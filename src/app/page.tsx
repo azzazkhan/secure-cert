@@ -1,6 +1,6 @@
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { CircleCheck, FileCheck, Search, UserCheck } from 'lucide-react'
+import ConnectionButton from './connection-button'
 
 export default function Home() {
     return (
@@ -101,9 +101,8 @@ export default function Home() {
                 <p className="mb-6 text-lg text-gray-600">
                     Connect your wallet to begin issuing, revoking, or verifying certificates.
                 </p>
-                <Button size="lg" className="px-8 py-3 text-lg">
-                    Connect MetaMask Wallet
-                </Button>
+
+                <ConnectionButton />
             </div>
         </div>
     )

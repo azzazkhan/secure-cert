@@ -1,9 +1,11 @@
 'use client'
 
+import ConnectionMessage from '@/components/common/connection-message'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { useWallet } from '@/hooks/use-wallet'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LoaderCircle } from 'lucide-react'
 import { useForm } from 'react-hook-form'
@@ -11,6 +13,7 @@ import useIssueCertificate from './hooks'
 import { Certificate, CertificateSchema } from './schema'
 
 export default function IssueCertificate() {
+    const { success } = useWallet()
     const { mutate, isPending } = useIssueCertificate()
 
     const form = useForm<Certificate>({
@@ -43,51 +46,57 @@ export default function IssueCertificate() {
                         Enter the student&apos;s Ethereum address and document hash to issue a certificate
                     </CardDescription>
                 </CardHeader>
-                <CardContent>
-                    <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                            <FormField
-                                control={form.control}
-                                name="studentAddress"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Student Ethereum Address</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                {...field}
-                                                disabled={isPending}
-                                                placeholder="Enter Ethereum address of the student"
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="documentHash"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Document SHA-256 Hash</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                {...field}
-                                                disabled={isPending}
-                                                placeholder="Enter the SHA256 hash of the certificate document"
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                {success ? (
+                    <CardContent>
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                                <FormField
+                                    control={form.control}
+                                    name="studentAddress"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Student Ethereum Address</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    {...field}
+                                                    disabled={isPending}
+                                                    placeholder="Enter Ethereum address of the student"
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="documentHash"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Document SHA-256 Hash</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    {...field}
+                                                    disabled={isPending}
+                                                    placeholder="Enter the SHA256 hash of the certificate document"
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
 
-                            <Button type="submit" className="w-full" disabled={isPending}>
-                                {isPending && <LoaderCircle className="size-4 animate-spin" />}
-                                {isPending ? 'Issuing Certificate' : 'Issue Certificate'}
-                            </Button>
-                        </form>
-                    </Form>
-                </CardContent>
+                                <Button type="submit" className="w-full" disabled={isPending}>
+                                    {isPending && <LoaderCircle className="size-4 animate-spin" />}
+                                    {isPending ? 'Issuing Certificate' : 'Issue Certificate'}
+                                </Button>
+                            </form>
+                        </Form>
+                    </CardContent>
+                ) : (
+                    <CardContent>
+                        <ConnectionMessage />
+                    </CardContent>
+                )}
             </Card>
         </div>
     )

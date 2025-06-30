@@ -10,6 +10,8 @@ export interface WalletContextType {
     loading: boolean
     decoder: ErrorDecoder
     error: string | null
+    success: boolean
+    reconnect: () => void
 }
 
 export const WalletContext = createContext<WalletContextType | null>(null)
