@@ -1,5 +1,7 @@
 import Header from '@/components/layout/header'
 // import { ThemeProvider } from '@/providers/theme-provider'
+import ConfirmationModal from '@/components/common/confirmation-modal'
+import EventProvider from '@/providers/event-provider'
 import ProgressProvider from '@/providers/progress-provider'
 import QueryProvider from '@/providers/query-provider'
 import WalletProvider from '@/providers/wallet-provider'
@@ -30,13 +32,16 @@ export default function RootLayout({
             >
                 <ProgressProvider>
                     <QueryProvider>
-                        <WalletProvider>
-                            {/* <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange> */}
-                            <Header />
-                            <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">{children}</main>
-                            <Toaster />
-                            {/* </ThemeProvider> */}
-                        </WalletProvider>
+                        <EventProvider>
+                            <WalletProvider>
+                                {/* <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange> */}
+                                <Header />
+                                <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">{children}</main>
+                                <Toaster />
+                                <ConfirmationModal />
+                                {/* </ThemeProvider> */}
+                            </WalletProvider>
+                        </EventProvider>
                     </QueryProvider>
                 </ProgressProvider>
             </body>

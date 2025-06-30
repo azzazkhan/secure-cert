@@ -4,8 +4,11 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useEvent } from '@/hooks/use-event'
+import { OPEN_CONFIRMATION_MODAL, OpenConfirmationModalPayload } from '@/lib/events'
 import { useClipboard } from '@mantine/hooks'
 import { Ban, Copy, Loader2 } from 'lucide-react'
+import { useCallback } from 'react'
 import { useRemoveIssuer } from './hooks'
 
 interface Props {
@@ -16,6 +19,26 @@ interface Props {
 export default function Issuer({ address, name }: Props) {
     const clipboard = useClipboard({ timeout: 500 })
     const { mutate, isPending } = useRemoveIssuer()
+    const { emit } = useEvent()
+
+    const openRemovalConfirmationModal = useCallback(() => {
+        emit<OpenConfirmationModalPayload>(OPEN_CONFIRMATION_MODAL, {
+            id: 'remove-issuer',
+            type: 'delete',
+            title: 'Remove Issuer',
+            description: 'Are you sure you want to remove this issuer?',
+            cancelLabel: 'Cancel',
+            confirmLabel: 'Delete',
+            onConfirm: () => {
+                return new Promise((resolve, reject) => {
+                    mutate(address, {
+                        onSuccess: resolve,
+                        onError: reject
+                    })
+                })
+            }
+        })
+    }, [mutate, emit, address])
 
     return (
         <div className="grid w-full max-w-sm items-center gap-2">
@@ -47,7 +70,7 @@ export default function Issuer({ address, name }: Props) {
                             size="icon"
                             className="shrink-0"
                             disabled={isPending}
-                            onClick={() => mutate(address)}
+                            onClick={openRemovalConfirmationModal}
                         >
                             {isPending ? <Loader2 className="animate-spin" /> : <Ban />}
                         </Button>

@@ -42,6 +42,22 @@
     --radius-md: calc(var(--radius) - 2px);
     --radius-lg: var(--radius);
     --radius-xl: calc(var(--radius) + 4px);
+
+    --color-red-lighter: var(--red-lighter);
+    --color-red: var(--red-default);
+    --color-red-dark: var(--red-dark);
+
+    --color-orange-lighter: var(--orange-lighter);
+    --color-orange: var(--orange-default);
+    --color-orange-dark: var(--orange-dark);
+
+    --color-blue-lighter: var(--blue-lighter);
+    --color-blue: var(--blue-default);
+    --color-blue-dark: var(--blue-dark);
+
+    --color-green-lighter: var(--green-lighter);
+    --color-green: var(--green-default);
+    --color-green-dark: var(--green-dark);
 }
 
 :root {
@@ -77,6 +93,22 @@
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
+
+    --red-lighter: rgb(247, 212, 214);
+    --red-default: rgb(238, 0, 0);
+    --red-dark: rgb(197, 0, 0);
+
+    --orange-lighter: rgb(255, 239, 207);
+    --orange-default: rgb(245, 166, 35);
+    --orange-dark: rgb(171, 87, 10);
+
+    --blue-lighter: rgb(211, 229, 255);
+    --blue-default: rgb(0, 112, 243);
+    --blue-dark: rgb(7, 97, 209);
+
+    --green-lighter: rgb(185, 249, 207);
+    --green-default: rgb(17, 168, 73);
+    --green-dark: rgb(17, 132, 60);
 }
 
 .dark {
@@ -111,6 +143,18 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.556 0 0);
+
+    --red-lighter: rgb(80, 0, 0);
+    --red-dark: rgb(255, 193, 193);
+
+    --orange-lighter: rgb(68, 29, 4);
+    --orange-dark: rgb(252, 234, 139);
+
+    --blue-lighter: rgb(13, 51, 94);
+    --blue-dark: rgb(181, 233, 255);
+
+    --green-lighter: rgb(3, 48, 22);
+    --green-dark: rgb(185, 249, 207);
 }
 
 @layer base {

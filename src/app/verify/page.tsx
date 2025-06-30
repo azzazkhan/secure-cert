@@ -43,9 +43,6 @@ export default function VerifyCertificate() {
     const onSubmit = (data: VerifyCertificateForm) => {
         mutate(data.documentHash, {
             onSuccess: (data) => {
-                setOpened(true)
-                setVerification(data)
-
                 if (data.valid) {
                     setOpened(true)
                     setVerification(data)
