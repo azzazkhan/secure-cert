@@ -217,19 +217,6 @@
         "type": "function"
     },
     {
-        "inputs": [],
-        "name": "getRole",
-        "outputs": [
-            {
-                "internalType": "enum SecureCert.Role",
-                "name": "",
-                "type": "uint8"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
         "inputs": [
             {
                 "internalType": "address",
